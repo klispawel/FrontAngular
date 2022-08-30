@@ -1,0 +1,2 @@
+C:\Users\pawel.klis\source\repos\ProductFrontEnd\FrontAngular\obj\Debug\FrontAngular.esproj.SuggestedBindingRedirects.cache
+C:\Users\pawel.klis\source\repos\ProductFrontEnd\FrontAngular\obj\Debug\FrontAngular.esproj.CoreCompileInputs.cache

@@ -1,0 +1,133 @@
+<div *ngIf="isDataLoaded">
+  <div class="container">
+    <mat-card>
+      <mat-toolbar color="accent">
+        <div align="center" style="color:white;text-align: right;">
+          Lista produktów
+        </div>
+      </mat-toolbar>
+      <br>
+      <mat-card-content>
+        <form [formGroup]="productForm" (ngSubmit)="onFormSubmit()">
+          <div class="row d-flex">
+            <div class="col">
+              <mat-form-field class="demo-full-width">
+                <input formControlName="Name" matTooltip="Enter product Name" matInput placeholder="Nazwa produktu">
+              </mat-form-field>
+              <mat-error>
+                <span *ngIf="!productForm.get('Name').value && productForm.get('Name').touched"></span>
+              </mat-error>
+            </div>
+            <div class="col">
+              <mat-form-field class="demo-full-width">
+                <input formControlName="Code" matTooltip="Enter code" matInput placeholder="Kod produktu">
+              </mat-form-field>
+              <mat-error>
+                <span *ngIf="!productForm.get('Code').value && productForm.get('Code').touched"></span>
+              </mat-error>
+            </div>
+            <div class="col">
+              <mat-form-field class="demo-full-width">
+                <input type="number" matTooltip="Enter price" formControlName="Price" matInput placeholder="Cena PLN">
+              </mat-form-field>
+              <mat-error>
+                <span *ngIf="!productForm.get('Price').value && productForm.get('Price').touched"></span>
+              </mat-error>
+            </div>
+            <div class="col">
+            </div>
+          </div>
+          <div class="row d-flex">
+            <div class="col">
+              <button type="submit" mat-raised-button color="accent" matTooltip="Click Submit Button" [disabled]="!productForm.valid">Zapisz</button>
+              <button type="reset" mat-raised-button color="accent" matTooltip="Click Reset Button" (click)="resetForm()">Reset</button>
+            </div>
+            <div class="col">
+              <div class="d-flex">
+                <input class="form-control me-2" type="search" #search placeholder="nazwa,kod" aria-label="Search">
+                <button class="btn btn-outline-warning" type="button" (click)="searchProduct(search.value);">Znajdź</button>
+              </div>
+            </div>
+            <div class="col">
+              <p *ngIf="dataSaved" style="color:rgb(0, 128, 0);font-size:20px;font-weight:bold" Class="success" align="left">
+                {{message}}
+              </p>
+            </div>
+            <div class="col">
+            </div>
+            <div class="col">
+            </div>
+          </div>
+
+            <br>
+            <table class="table table-sm">
+              <thead>
+                <tr ngclass="btn-primary">
+                  <th class="tbl2">Nazwa</th>
+                  <th class="tbl2">Kod</th>
+                  <th class="tbl2">Cena PLN</th>
+                  <th class="tbl2">Cena EUR</th>
+                  <th class="tbl2">Edycja</th>
+                  <th class="tbl2">Kasowanie</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let product of allProducts | async">
+                  <td class="tbl2">{{product.name}}</td>
+                  <td class="tbl2">{{product.code}}</td>
+                  <td class="tbl2">{{product.price | number:'.2'}} PLN</td>
+                  <td class="tbl2">{{product.priceEUR | number:'.2'}} EUR</td>
+                  <td class="tbl2">
+                    <button type="button" class="btn btn-info btn-sm" matTooltip="Click Edit Button" (click)="loadproductToEdit(product.id)">Edycja</button>
+                  </td>
+                  <td class="tbl2">
+                    <button type="button" class="btn btn-danger btn-sm" matTooltip="Click Delete Button" (click)="deleteproduct(product.id)">Usuń</button>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="5">
+                    <select (change)="onChange($event)">
+                      <option value="10">10</option>
+                      <option value="20">20</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                    </select>
+                    <button type="button" class="btn" (click)="previousPage()"><</button>
+                    <label>
+                      Strona: {{pageIndex }} z {{pageCount  }}
+                    </label>
+                    <button type="button" class="btn" (click)="nextPage()">></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="5">
+
+                    <div *ngIf="cashRate.isError; then rate else rateerror">
+                    </div>
+
+                    <ng-template #rate>
+                      {{cashRate.errorMesage}}
+                    </ng-template>
+
+                    <ng-template #rateerror>
+                      Kurs {{cashRate.currency}} na dzień {{cashRate.effectiveDate}}
+                      numer notowania NBP: {{cashRate.no}}
+                      kurs kupna: {{cashRate.ask}}
+                      kurs sprzedaży: {{cashRate.bid}}
+                    </ng-template>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+
+<div *ngIf="errorMessage" class="alert alert-warning">
+  <strong>Warning!</strong> {{errorMessage | json}}
+</div>
